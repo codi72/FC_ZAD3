@@ -33,16 +33,50 @@ while opcja != "koniec":
             print("Nieprawidłowa opcja dla operacji saldo")
 
     elif opcja == "sprzedaż":
+        nazwa_produktu = input("Podaj nazwe produktu: ")
+        ilosc_produktu = int(input("Podaj ilosc produktu: "))
+        cena_produktu = int(input("Podaj cene produktu: "))
+        if nazwa_produktu in magazyn:
+            magazyn[nazwa_produktu]["ilosc"] -= ilosc_produktu
+            magazyn[nazwa_produktu]["cena"] = cena_produktu
+            message = f"Zaktualizowano produkt {nazwa_produktu}"
+            historia_akcji.append(message)
+            print(message)
+        else:
+            magazyn[nazwa_produktu] = {
+            "ilosc": ilosc_produktu,
+            "cena": cena_produktu,
+            }
+            message = f"Dodano do magazynu nowy produkt {nazwa_produktu}"
+            historia_akcji.append(message)
+            print(message)
+        saldo += cena_produktu * ilosc_produktu
         """Program pobiera nazwę przedniotu, cenę oraz liczbę sztuk.
         Produkt musi znajdować się w magazynie.
         Obliczenia respektuje względem konta i magazynu"""
-        pass
+
     elif opcja == "zakup":
         """Program pobiera nazwę produktu, cenę oraz liczbę sztuk.
         Produkt zostaje dodany do magazynu, jesli go nie było.
         Obliczenia są wykonane odwrotnie do komendy sprzedaż
         Saldo konta po zakończeniu operaji "zakup" nie może być ujemne."""
-        pass
+        produkt = input("Podaj nazwę produktu: ")
+        cena = float(input("Podaj cenę produktu: "))
+        ilosc = int(input("Podaj ilość produktu: "))
+        if saldo < cena * ilosc:
+            print("Nie masz wystarczających ilosci pieniędzy na koncie \n")
+            continue
+        if produkt in magazyn:
+            magazyn[produkt]["ilosc"] += ilosc
+            saldo -= cena * ilosc
+            historia_akcji.append(f"[{opcja}] Zakupiono {ilosc} szt. {produkt} za {cena:.2f} zł")
+            print (f"Saldo po operacji: {saldo:.2f} zł\n")
+        else:
+            magazyn[produkt]={"cena": cena, "ilosc": ilosc,}
+            saldo -= cena * ilosc
+            historia_akcji.append(f"[{opcja}] Zakupiono {ilosc} szt. {produkt} za {cena:.2f} zł")
+            print (f"Saldo po operacji: {saldo:.2f} zł\n")
+            
     elif opcja == "konto":
         """Program wyświetla stan konta"""
         print(f"Stan konta: {saldo:.2f} zł")
@@ -52,13 +86,12 @@ while opcja != "koniec":
         for produkt, dane in magazyn.items():
             print(f"{produkt} - cena: {dane['cena']:.2f} zł, ilość: {dane['ilosc']}")
     elif opcja == "magazyn":
-        """Program wyśqietla stan magazynu dla konkretnego produktu. Należy podać jego nazwę."""
+        """Program wyświetla stan magazynu dla konkretnego produktu. Należy podać jego nazwę."""
         produkt = input("Podaj nazwę produktu: ")
         if produkt in magazyn:
             print(f"{produkt} - cena: {magazyn[produkt]['cena']:.2f} zł, ilość: {magazyn[produkt]['ilosc']}")
         else:
             print(f"Nie ma {produkt} w magazynie !!!")
-
 
     elif opcja == "przegląd":
         """Program pobiera zmienne "od" do "do".
